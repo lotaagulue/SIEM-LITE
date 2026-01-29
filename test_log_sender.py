@@ -13,7 +13,7 @@ import json
 # Configuration
 # IMPORTANT: This URL must point to your Vercel deployment's API endpoint.
 # It should look like: https://your-app-name.vercel.app/api/ingest
-API_ENDPOINT = "https://siem-lite-fppjqtv58-lotas-projects-7907767d.vercel.app/api/ingest"
+API_ENDPOINT = "https://siem-lite.vercel.app/api/ingest"
 
 # Sample data for generating realistic logs
 SOURCES = [
@@ -150,8 +150,17 @@ def send_event(event):
             print(f"   - Current Endpoint: {API_ENDPOINT}")
             print("   - Ensure it ends with /api/ingest")
             return None
+        elif response.status_code == 404:
+            print(f"❌ Error: 404 Not Found. The endpoint {API_ENDPOINT} was not found.")
+            print("   - Did you redeploy? The Deployment URL in this script might be old.")
+            print("   - Please update API_ENDPOINT to your main Vercel domain (e.g. https://your-project.vercel.app/api/ingest)")
+            return None
         else:
-            print(f"❌ Error sending event: {response.status_code} - {response.text[:100]}...")
+            try:
+                error_details = response.json()
+                print(f"❌ Error sending event: {response.status_code} - {json.dumps(error_details)}")
+            except json.JSONDecodeError:
+                print(f"❌ Error sending event: {response.status_code} - {response.text[:200]}...")
             return None
             
     except Exception as e:

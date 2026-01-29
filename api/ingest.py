@@ -98,7 +98,7 @@ class handler(BaseHTTPRequestHandler):
             response = {
                 'success': True,
                 'message': 'Event logged successfully',
-                'event_id': result.data[0]['id'] if result.data else None,
+                'event_id': result.data[0]['id'] if result.data and len(result.data) > 0 else None,
                 'analysis': {
                     'is_anomaly': analysis['is_anomaly'],
                     'anomaly_score': analysis['anomaly_score'],
