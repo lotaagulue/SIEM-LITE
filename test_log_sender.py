@@ -11,8 +11,9 @@ from datetime import datetime
 import json
 
 # Configuration
-API_ENDPOINT = "http://localhost:3000/api/ingest"  # Change to your Vercel URL in production
-# API_ENDPOINT = "https://your-app.vercel.app/api/ingest"
+# IMPORTANT: This URL must point to your Vercel deployment's API endpoint.
+# It should look like: https://your-app-name.vercel.app/api/ingest
+API_ENDPOINT = "https://siem-lite-fppjqtv58-lotas-projects-7907767d.vercel.app/api/ingest"
 
 # Sample data for generating realistic logs
 SOURCES = [
@@ -141,8 +142,16 @@ def send_event(event):
             status = "🔴 ANOMALY" if result.get('analysis', {}).get('is_anomaly') else "🟢 NORMAL"
             print(f"{status} | {event['severity'].upper():8} | {event['event_type']:20} | Score: {result.get('analysis', {}).get('anomaly_score', 0):.2f}")
             return result
+        elif response.status_code == 401 and "Vercel" in response.text:
+            print("❌ Error: Vercel Deployment Protection is enabled. Go to Vercel Settings > Deployment Protection and disable 'Vercel Authentication'.")
+            return None
+        elif response.status_code == 405:
+            print(f"❌ Error: 405 Method Not Allowed. You are likely posting to the wrong URL.")
+            print(f"   - Current Endpoint: {API_ENDPOINT}")
+            print("   - Ensure it ends with /api/ingest")
+            return None
         else:
-            print(f"❌ Error sending event: {response.status_code} - {response.text}")
+            print(f"❌ Error sending event: {response.status_code} - {response.text[:100]}...")
             return None
             
     except Exception as e:
