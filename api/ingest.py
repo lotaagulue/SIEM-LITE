@@ -12,11 +12,7 @@ import sys
 sys.path.insert(0, os.path.dirname(__file__))
 from log_analyzer import LogAnalyzer
 
-try:
-    from supabase import create_client, Client
-except ImportError:
-    create_client = None
-    Client = None
+from supabase import create_client, Client
 
 
 class handler(BaseHTTPRequestHandler):
@@ -33,10 +29,11 @@ class handler(BaseHTTPRequestHandler):
     def _get_supabase_client(self) -> Client:
         """Initialize Supabase client"""
         url = os.environ.get('SUPABASE_URL')
-        key = os.environ.get('SUPABASE_ANON_KEY')
+        # Prefer Service Role Key for backend operations to bypass RLS
+        key = os.environ.get('SUPABASE_SERVICE_ROLE_KEY') or os.environ.get('SUPABASE_ANON_KEY')
         
         if not url or not key:
-            raise ValueError("Missing SUPABASE_URL or SUPABASE_ANON_KEY environment variables")
+            raise ValueError("Missing SUPABASE_URL or SUPABASE_SERVICE_ROLE_KEY environment variables")
         
         return create_client(url, key)
     

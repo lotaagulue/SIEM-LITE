@@ -45,6 +45,7 @@ vercel
 # Add environment variables in Vercel dashboard:
 # - SUPABASE_URL
 # - SUPABASE_ANON_KEY
+# - SUPABASE_SERVICE_ROLE_KEY (Required for log ingestion)
 # - REACT_APP_SUPABASE_URL
 # - REACT_APP_SUPABASE_ANON_KEY
 
