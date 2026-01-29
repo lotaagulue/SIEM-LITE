@@ -6,9 +6,12 @@ readme = "README.md"
 requires-python = ">=3.13"
 dependencies = [
     "autoprefixer>=0.1.0",
+    "gotrue==1.0.1",
+    "postgrest==0.10.6",
+    "pydantic==1.10.13",
     "python-dotenv>=1.2.1",
     "react>=4.3.0",
-    "supabase>=2.27.2",
+    "supabase==2.0.3",
     "tailwindcss>=0.0.1",
     "vite>=1.5.2",
 ]
