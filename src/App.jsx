@@ -12,10 +12,11 @@ import {
 } from 'lucide-react';
 
 // Initialize Supabase client
-const supabase = createClient(
-  import.meta.env.VITE_SUPABASE_URL || '',
-  import.meta.env.VITE_SUPABASE_ANON_KEY || ''
-);
+const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
+const supabaseKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
+
+// Only create client if credentials exist to prevent runtime crash
+const supabase = supabaseUrl && supabaseKey ? createClient(supabaseUrl, supabaseKey) : null;
 
 const StatCard = ({ title, value, icon, trend, alert }) => (
   <div className={`p-6 border-2 rounded-lg bg-black/50 ${alert ? 'border-red-500 animate-pulse' : 'border-green-500'}`}>
@@ -51,6 +52,8 @@ const SIEMLiteDashboard = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    if (!supabase) return;
+
     fetchDashboardData();
     
     const subscription = supabase
@@ -70,6 +73,7 @@ const SIEMLiteDashboard = () => {
   }, [timeRange]);
 
   const fetchDashboardData = async () => {
+    if (!supabase) return;
     setLoading(true);
     try {
       const now = new Date();
@@ -126,6 +130,7 @@ const SIEMLiteDashboard = () => {
   };
 
   const updateStats = async () => {
+    if (!supabase) return;
     const { data } = await supabase
       .from('log_events')
       .select('is_anomaly')
@@ -165,6 +170,28 @@ const SIEMLiteDashboard = () => {
       log.event_type.toLowerCase().includes(searchTerm.toLowerCase());
     return matchesSeverity && matchesSearch;
   });
+
+  if (!supabase) {
+    return (
+      <div className="min-h-screen bg-black text-red-500 font-mono flex items-center justify-center p-8">
+        <div className="border-2 border-red-500 p-8 rounded-lg max-w-2xl bg-black/90">
+          <h1 className="text-2xl font-bold mb-4 flex items-center gap-2">
+            <AlertTriangle className="w-8 h-8" />
+            CONFIGURATION ERROR
+          </h1>
+          <p className="mb-4">Supabase credentials are missing.</p>
+          <p className="text-sm text-gray-400 mb-2">Please check your environment variables:</p>
+          <ul className="list-disc list-inside text-sm text-gray-500 font-mono mb-4">
+            <li>VITE_SUPABASE_URL</li>
+            <li>VITE_SUPABASE_ANON_KEY</li>
+          </ul>
+          <p className="text-xs text-gray-600">
+            If running locally, check .env file. If on Vercel, check Project Settings.
+          </p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-black text-green-400 font-mono">
