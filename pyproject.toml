@@ -1,0 +1,14 @@
+[project]
+name = "siem-lite"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.13"
+dependencies = [
+    "autoprefixer>=0.1.0",
+    "python-dotenv>=1.2.1",
+    "react>=4.3.0",
+    "supabase>=2.27.2",
+    "tailwindcss>=0.0.1",
+    "vite>=1.5.2",
+]
