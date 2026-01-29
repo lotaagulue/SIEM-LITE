@@ -22,15 +22,5 @@
       "src": "/(.*)",
       "dest": "/$1"
     }
-  ],
-  "env": {
-    "SUPABASE_URL": "@supabase-url",
-    "SUPABASE_ANON_KEY": "@supabase-anon-key"
-  },
-  "build": {
-    "env": {
-      "REACT_APP_SUPABASE_URL": "@supabase-url",
-      "REACT_APP_SUPABASE_ANON_KEY": "@supabase-anon-key"
-    }
-  }
+  ]
 }

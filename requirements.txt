@@ -1,6 +1,1 @@
-react
 supabase
-vite
-tailwindcss
-autoprefixer
-python-dotenv
