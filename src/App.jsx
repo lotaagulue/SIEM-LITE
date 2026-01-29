@@ -17,6 +17,25 @@ const supabase = createClient(
   import.meta.env.VITE_SUPABASE_ANON_KEY || ''
 );
 
+const StatCard = ({ title, value, icon, trend, alert }) => (
+  <div className={`p-6 border-2 rounded-lg bg-black/50 ${alert ? 'border-red-500 animate-pulse' : 'border-green-500'}`}>
+    <div className="flex items-start justify-between mb-4">
+      <div className={alert ? 'text-red-500' : 'text-green-500'}>
+        {icon}
+      </div>
+      {trend && (
+        <div className={`text-xs font-bold ${alert ? 'text-red-500' : 'text-green-600'}`}>
+          {trend}
+        </div>
+      )}
+    </div>
+    <div className="text-sm text-gray-400 mb-1">{title}</div>
+    <div className={`text-2xl font-bold ${alert ? 'text-red-500' : 'text-green-400'}`}>
+      {value}
+    </div>
+  </div>
+);
+
 const SIEMLiteDashboard = () => {
   const [logs, setLogs] = useState([]);
   const [alerts, setAlerts] = useState([]);
@@ -362,3 +381,5 @@ const SIEMLiteDashboard = () => {
     </div>
   );
 }
+
+export default SIEMLiteDashboard;

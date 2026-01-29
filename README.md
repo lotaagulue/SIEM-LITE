@@ -46,8 +46,8 @@ vercel
 # - SUPABASE_URL
 # - SUPABASE_ANON_KEY
 # - SUPABASE_SERVICE_ROLE_KEY (Required for log ingestion)
-# - REACT_APP_SUPABASE_URL
-# - REACT_APP_SUPABASE_ANON_KEY
+# - VITE_SUPABASE_URL
+# - VITE_SUPABASE_ANON_KEY
 
 # Deploy to production
 vercel --prod
