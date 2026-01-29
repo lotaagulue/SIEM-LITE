@@ -356,4 +356,9 @@ const SIEMLiteDashboard = () => {
           </div>
 
           <div className="mt-8 pt-6 border-t border-green-900 text-center text-xs text-green-800">
-            <p>SIEM LITE v1.0
+            <p>SIEM LITE v1.0</p></div>
+        </div>
+      </div>
+    </div>
+  );
+}
