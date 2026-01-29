@@ -94,6 +94,15 @@ class handler(BaseHTTPRequestHandler):
             supabase = self._get_supabase_client()
             result = supabase.table('log_events').insert(event).execute()
             
+            # Explicitly check for database errors from Supabase
+            if hasattr(result, 'error') and result.error:
+                self._set_headers(500)
+                self.wfile.write(json.dumps({
+                    'error': 'Database operation failed',
+                    'details': str(result.error)
+                }).encode())
+                return
+
             self._set_headers(201)
             response = {
                 'success': True,

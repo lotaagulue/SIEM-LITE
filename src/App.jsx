@@ -62,7 +62,11 @@ const SIEMLiteDashboard = () => {
         { event: 'INSERT', schema: 'public', table: 'log_events' },
         payload => {
           setLogs(prev => [payload.new, ...prev].slice(0, 100));
-          updateStats();
+          setStats(prev => ({
+            ...prev,
+            totalEvents: prev.totalEvents + 1,
+            anomalyCount: prev.anomalyCount + (payload.new.is_anomaly ? 1 : 0)
+          }));
         }
       )
       .subscribe();
@@ -126,22 +130,6 @@ const SIEMLiteDashboard = () => {
       console.error('Error fetching dashboard data:', error);
     } finally {
       setLoading(false);
-    }
-  };
-
-  const updateStats = async () => {
-    if (!supabase) return;
-    const { data } = await supabase
-      .from('log_events')
-      .select('is_anomaly')
-      .limit(100);
-    
-    if (data) {
-      setStats(prev => ({
-        ...prev,
-        totalEvents: prev.totalEvents + 1,
-        anomalyCount: prev.anomalyCount + (data[0]?.is_anomaly ? 1 : 0)
-      }));
     }
   };
 
