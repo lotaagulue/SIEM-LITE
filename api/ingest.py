@@ -8,11 +8,21 @@ import json
 import os
 from datetime import datetime
 import sys
+import traceback
 
-sys.path.insert(0, os.path.dirname(__file__))
-from log_analyzer import LogAnalyzer
-
-from supabase import create_client, Client
+# Handle imports safely to debug Vercel deployment issues
+try:
+    sys.path.insert(0, os.path.dirname(__file__))
+    from log_analyzer import LogAnalyzer
+    from supabase import create_client, Client
+    import_error = None
+except Exception as e:
+    # Capture import errors to return as API response
+    import_error = f"Import Error: {str(e)}\n{traceback.format_exc()}"
+    LogAnalyzer = None
+    create_client = None
+    # Define dummy Client for type hint compatibility
+    Client = object
 
 
 class handler(BaseHTTPRequestHandler):
@@ -49,6 +59,15 @@ class handler(BaseHTTPRequestHandler):
     
     def do_POST(self):
         """Handle POST requests for log ingestion"""
+        # Check for critical import errors during initialization
+        if import_error:
+            self._set_headers(500)
+            self.wfile.write(json.dumps({
+                'error': 'Server Configuration Error',
+                'details': import_error
+            }).encode())
+            return
+
         try:
             data = self._read_body()
             
